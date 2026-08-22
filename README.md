@@ -39,7 +39,7 @@ A visual tech news preview webpage inspired by 1990s print magazine aesthetics.
 - Unsplash images (via URL)
 
 ## Preview
-- ![Preview](https://rishabhbhardwaj-dev.github.io/byte-and-circuit/)
+- ![Preview]
 ## Usage
 
 Just open `index.html` in a browser. That's it.
