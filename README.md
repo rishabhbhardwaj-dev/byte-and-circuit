@@ -39,7 +39,9 @@ A visual tech news preview webpage inspired by 1990s print magazine aesthetics.
 - Unsplash images (via URL)
 
 ## Preview
-- ![Preview](Screenshot%202026-08-22%20153608.png)
+
+![Preview](Screenshot%202026-08-22%20153608.png)
+
 ## Usage
 
 Just open `index.html` in a browser. That's it.
