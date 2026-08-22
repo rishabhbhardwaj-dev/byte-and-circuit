@@ -38,6 +38,8 @@ A visual tech news preview webpage inspired by 1990s print magazine aesthetics.
 - Google Fonts (Playfair Display, IBM Plex Mono)
 - Unsplash images (via URL)
 
+## Preview
+- ![Preview](preview.png)
 ## Usage
 
 Just open `index.html` in a browser. That's it.
