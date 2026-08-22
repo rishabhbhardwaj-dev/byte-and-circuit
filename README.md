@@ -2,7 +2,11 @@
 
 A visual tech news preview webpage inspired by 1990s print magazine aesthetics.
 
-**🔗 Live Site:** [rishabhbhardwaj-dev.github.io/byte-and-circuit](https://rishabhbhardwaj-dev.github.io/byte-and-circuit/)
+<p>
+  <a href="https://rishabhbhardwaj-dev.github.io/byte-and-circuit/">
+    <img src="https://img.shields.io/badge/🌐_Live_Demo-Visit_Site-black?style=for-the-badge" alt="Live Demo">
+  </a>
+</p>
 
 ---
 
