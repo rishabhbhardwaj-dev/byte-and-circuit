@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BYTE & CIRCUIT — Tech Review, Vol. 7 No. 8</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & Base ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --paper: #f4efe6;
+  --paper-dark: #e8e0d0;
+  --ink: #1a1a18;
+  --ink-light: #3d3a35;
+  --ink-faded: #6b6560;
+  --accent: #8b2500;
+  --accent-light: #c44d2a;
+  --rule: #b5ad9e;
+  --col-gap: 2rem;
+  --page-pad: 4rem;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-weight: 400;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--ink);
+  background: var(--paper);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Paper Texture Overlay ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+/* ── Noise Overlay for Images ── */
+.img-noise {
+  position: relative;
+  overflow: hidden;
+}
+.img-noise::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 2;
+}
+.img-noise img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: sepia(0.2) contrast(1.05) brightness(0.97);
+}
+
+/* ── Typography ── */
+h1, h2, h3, h4, h5 {
+  font-family: 'Playfair Display', 'Georgia', serif;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border-bottom: 1px solid var(--accent);
+  padding-bottom: 0.3rem;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+.byline {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--ink-faded);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+
+.drop-cap::first-letter {
+  font-family: 'Playfair Display', serif;
+  font-size: 4.2em;
+  float: left;
+  line-height: 0.8;
+  margin-right: 0.08em;
+  margin-top: 0.05em;
+  color: var(--accent);
+  font-weight: 900;
+}
+
+/* ── Page Shell ── */
+.page {
+  min-height: 100vh;
+  padding: var(--page-pad);
+  position: relative;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.page.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Page turn divider */
+.page-divider {
+  position: relative;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.page-divider::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  height: 1px;
+  background: var(--rule);
+}
+.page-divider span {
+  background: var(--paper);
+  padding: 0 2rem;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--ink-faded);
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Masthead / Cover ── */
+.masthead {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--page-pad);
+  position: relative;
+  overflow: hidden;
+}
+
+.masthead-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 0.5rem;
+  margin-bottom: 3rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+}
+
+.masthead-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(4rem, 10vw, 9rem);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  margin-left: -0.06em;
+  /* Overflow left viewport */
+  margin-left: calc(-1 * var(--page-pad) - 2vw);
+  padding-left: 2vw;
+  position: relative;
+}
+.masthead-title::after {
+  content: '';
+  position: absolute;
+  bottom: -0.15em;
+  left: calc(var(--page-pad) + 2vw);
+  right: 0;
+  height: 3px;
+  background: var(--accent);
+}
+
+.masthead-subtitle {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  margin-top: 1.5rem;
+  max-width: 500px;
+}
+
+.masthead-cover-img {
+  position: absolute;
+  right: var(--page-pad);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38%;
+  max-width: 480px;
+  aspect-ratio: 3/4;
+  border: 1px solid var(--rule);
+}
+
+/* ── Table of Contents ── */
+.toc {
+  padding: var(--page-pad);
+  padding-top: 6rem;
+}
+
+.toc-header {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  font-weight: 900;
+  margin-bottom: 3rem;
+  border-bottom: 3px solid var(--ink);
+  padding-bottom: 1rem;
+}
+
+.toc-list {
+  list-style: none;
+  max-width: 700px;
+}
+
+.toc-item {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+  padding: 1.2rem 0;
+  border-bottom: 1px solid var(--rule);
+  cursor: pointer;
+  transition: background 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+}
+.toc-item:hover {
+  background: rgba(139, 37, 0, 0.04);
+}
+
+.toc-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--accent);
+  min-width: 2.5rem;
+  transition: font-size 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.3s;
+  line-height: 1;
+}
+.toc-item:hover .toc-num {
+  font-size: 2.8rem;
+  color: var(--accent-light);
+}
+
+.toc-text {
+  flex: 1;
+}
+.toc-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.25rem;
+}
+.toc-desc {
+  font-size: 0.75rem;
+  color: var(--ink-faded);
+  line-height: 1.5;
+}
+.toc-page {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--ink-faded);
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+/* ── Multi-Column Article Grid ── */
+.article-grid {
+  display: grid;
+  gap: var(--col-gap);
+  padding: 0 var(--page-pad);
+}
+
+/* Varying column layouts */
+.grid-2-1 {
+  grid-template-columns: 2fr 1fr;
+}
+.grid-1-2 {
+  grid-template-columns: 1fr 2fr;
+}
+.grid-1-1-1 {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+.grid-3-2 {
+  grid-template-columns: 3fr 2fr;
+}
+.grid-2-1-1 {
+  grid-template-columns: 2fr 1fr 1fr;
+}
+.grid-full {
+  grid-template-columns: 1fr;
+}
+
+.article-grid > .col-span-2 { grid-column: span 2; }
+.article-grid > .col-span-3 { grid-column: span 3; }
+
+/* ── Article Cards ── */
+.article {
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--rule);
+}
+.article:last-child { border-bottom: none; }
+
+.article-img {
+  width: 100%;
+  aspect-ratio: 16/10;
+  margin-bottom: 1rem;
+}
+
+.article h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+.article h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.4rem;
+}
+.article h4 {
+  font-size: 1.05rem;
+  margin-bottom: 0.3rem;
+}
+
+.article p {
+  margin-bottom: 0.8rem;
+  color: var(--ink-light);
+}
+
+.article-lead {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.65;
+}
+
+/* Pull quote */
+.pull-quote {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-style: italic;
+  line-height: 1.35;
+  color: var(--accent);
+  border-left: 3px solid var(--accent);
+  padding-left: 1.2rem;
+  margin: 2rem 0;
+}
+
+/* Sidebar box */
+.sidebar-box {
+  background: var(--paper-dark);
+  padding: 1.5rem;
+  border: 1px solid var(--rule);
+  font-size: 0.8rem;
+}
+.sidebar-box h4 {
+  font-size: 0.95rem;
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--rule);
+}
+.sidebar-box ul {
+  list-style: none;
+}
+.sidebar-box li {
+  padding: 0.4rem 0;
+  border-bottom: 1px dotted var(--rule);
+}
+.sidebar-box li:last-child { border-bottom: none; }
+
+/* ── Page Numbers ── */
+.page-num {
+  position: absolute;
+  bottom: 2rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--ink-faded);
+  letter-spacing: 0.1em;
+}
+.page-num.left { left: var(--page-pad); }
+.page-num.right { right: var(--page-pad); }
+
+/* ── Footer / Colophon ── */
+.colophon {
+  padding: 4rem var(--page-pad);
+  border-top: 3px solid var(--ink);
+  margin-top: 4rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 3rem;
+  font-size: 0.72rem;
+  color: var(--ink-faded);
+  line-height: 1.8;
+}
+
+.colophon h5 {
+  font-size: 0.85rem;
+  color: var(--ink);
+  margin-bottom: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.colophon-brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--ink);
+  margin-bottom: 1rem;
+}
+
+.colophon a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.colophon a:hover { text-decoration: underline; }
+
+.issn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: var(--ink-faded);
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+}
+
+.colophon-bottom {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* ── Page Turn Transition ── */
+.page-turn-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  pointer-events: none;
+  perspective: 1200px;
+}
+.page-turn-overlay .page-front {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 55%;
+  height: 100%;
+  background: var(--paper);
+  transform-origin: left center;
+  transform: rotateY(0deg);
+  box-shadow: -5px 0 20px rgba(0,0,0,0.15);
+  transition: transform 0.7s cubic-bezier(0.645, 0.045, 0.355, 1);
+  opacity: 0;
+}
+.page-turn-overlay.turning .page-front {
+  opacity: 1;
+  transform: rotateY(-180deg);
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  :root { --page-pad: 2rem; }
+  .grid-2-1, .grid-1-2, .grid-1-1-1, .grid-3-2, .grid-2-1-1 {
+    grid-template-columns: 1fr;
+  }
+  .article-grid > .col-span-2,
+  .article-grid > .col-span-3 { grid-column: span 1; }
+  .masthead-cover-img { display: none; }
+  .masthead-title { margin-left: -1rem; padding-left: 1rem; }
+  .colophon { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  :root { --page-pad: 1.2rem; }
+  .masthead-title { font-size: 3rem; }
+  .toc-num { font-size: 1.1rem; min-width: 2rem; }
+  .toc-item:hover .toc-num { font-size: 2rem; }
+}
+
+/* ── Scroll Animations ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(25px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+</head>
+<body>
+
+<!-- Page Turn Overlay -->
+<div class="page-turn-overlay" id="pageTurn">
+  <div class="page-front"></div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- MASTHEAD / COVER                           -->
+<!-- ════════════════════════════════════════════ -->
+<section class="masthead page" id="cover">
+  <div class="masthead-top">
+    <span>Volume VII · No. 8</span>
+    <span>August 2026</span>
+    <span>$4.95 / £3.50</span>
+  </div>
+
+  <h1 class="masthead-title">BYTE<br>&amp; CIRCUIT</h1>
+
+  <p class="masthead-subtitle">
+    The independent journal of technology, silicon, and the digital condition — since 1994
+  </p>
+
+  <div class="masthead-cover-img img-noise">
+    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=800&fit=crop" alt="Circuit board macro">
+  </div>
+
+  <span class="page-num left">i</span>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- TABLE OF CONTENTS                          -->
+<!-- ════════════════════════════════════════════ -->
+<div class="page-divider"><span>· · ·</span></div>
+
+<section class="toc page" id="toc">
+  <h2 class="toc-header">Contents</h2>
+
+  <nav>
+    <ul class="toc-list">
+      <a href="#art1" class="toc-item" data-page="art1">
+        <span class="toc-num">01</span>
+        <div class="toc-text">
+          <div class="toc-title">The Last Compiler</div>
+          <div class="toc-desc">How AI is rewriting the tools that built it</div>
+        </div>
+        <span class="toc-page">pp. 04–09</span>
+      </a>
+      <a href="#art2" class="toc-item" data-page="art2">
+        <span class="toc-num">02</span>
+        <div class="toc-text">
+          <div class="toc-title">Silicon Dust</div>
+          <div class="toc-desc">The hidden environmental cost of the chip boom</div>
+        </div>
+        <span class="toc-page">pp. 10–15</span>
+      </a>
+      <a href="#art3" class="toc-item" data-page="art3">
+        <span class="toc-num">03</span>
+        <div class="toc-text">
+          <div class="toc-title">Protocol People</div>
+          <div class="toc-desc">Inside the decentralized identity movement</div>
+        </div>
+        <span class="toc-page">pp. 16–21</span>
+      </a>
+      <a href="#art4" class="toc-item" data-page="art4">
+        <span class="toc-num">04</span>
+        <div class="toc-text">
+          <div class="toc-title">The 10ms City</div>
+          <div class="toc-desc">Ultra-low-latency networks and urban design</div>
+        </div>
+        <span class="toc-page">pp. 22–27</span>
+      </a>
+      <a href="#art5" class="toc-item" data-page="art5">
+        <span class="toc-num">05</span>
+        <div class="toc-text">
+          <div class="toc-title">Analog Resistance</div>
+          <div class="toc-desc">Why Gen-Z is buying vinyl and film cameras</div>
+        </div>
+        <span class="toc-page">pp. 28–31</span>
+      </a>
+      <a href="#art6" class="toc-item" data-page="art6">
+        <span class="toc-num">06</span>
+        <div class="toc-text">
+          <div class="toc-title">Exit Velocity</div>
+          <div class="toc-desc">Space-tech startups chasing the second internet</div>
+        </div>
+        <span class="toc-page">pp. 32–36</span>
+      </a>
+    </ul>
+  </nav>
+
+  <span class="page-num right">ii</span>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- ARTICLE 01 — The Last Compiler             -->
+<!-- ════════════════════════════════════════════ -->
+<div class="page-divider"><span>01</span></div>
+
+<section class="page" id="art1">
+  <div class="article-grid grid-2-1">
+    <div class="col-span-2">
+      <span class="section-label">Feature</span>
+      <h2 style="font-size: 3.2rem; margin-bottom: 1rem;">The Last Compiler</h2>
+      <p class="byline">By Eleanor Vance · Illustrations by R. Matsuda</p>
+    </div>
+
+    <div>
+      <div class="article-img img-noise">
+        <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&h=500&fit=crop" alt="Code on screen">
+      </div>
+      <p class="drop-cap article-lead">
+        For thirty years, the compiler was the gatekeeper — the austere machine that translated human intent into silicon reality. Now, a new generation of AI-native tools is dissolving that boundary entirely.
+      </p>
+      <p>
+        In a windowless office in Zurich, a team of six engineers recently shipped a codebase that would have taken sixty people eighteen months. They did it in eleven weeks. The secret wasn't better programmers. It was the absence of programming altogether — at least as we understood it.
+      </p>
+      <p>
+        "We still write code," says project lead Maren Holst, adjusting her glasses in a way that suggests she's explained this before. "But the ratio has shifted. I'd say we describe intent seventy percent of the time. The machine handles the rest."
+      </p>
+      <div class="pull-quote">
+        "The compiler was always a translator. Now the translation goes both directions — and the machine is starting to understand context."
+      </div>
+      <p>
+        The implications ripple outward like concentric circles in a pond. If the compiler — that foundational tool of the digital age — can be made to understand not just syntax but semantics, not just instructions but intentions, then the entire edifice of software development shifts on its axis.
+      </p>
+      <p>
+        Traditionalists scoff. "This is autocomplete with a marketing budget," writes veteran developer James Mickens in a widely-shared blog post. But the numbers tell a different story. GitHub's latest data shows that 67% of new code repositories now use AI-assisted tooling in their CI/CD pipelines, up from 12% just two years ago.
+      </p>
+    </div>
+
+    <div>
+      <div class="sidebar-box">
+        <h4>By the Numbers</h4>
+        <ul>
+          <li><strong>67%</strong> — New repos using AI tooling</li>
+          <li><strong>11×</strong> — Faster prototyping cycles</li>
+          <li><strong>$4.2B</strong> — AI dev-tools funding (H1 2026)</li>
+          <li><strong>340K</strong> — Open-source AI models on Hugging Face</li>
+          <li><strong>89%</strong> — Developers who prefer hybrid workflows</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-box" style="margin-top: 1.5rem;">
+        <h4>Related Reading</h4>
+        <ul>
+          <li>"The Mythical Man-Month" revisited</li>
+          <li>Why documentation is the new code</li>
+          <li>Interview: Linus on AI patches</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <span class="page-num left">04</span>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- ARTICLE 02 — Silicon Dust                  -->
+<!-- ════════════════════════════════════════════ -->
+<div class="page-divider"><span>02</span></div>
+
+<section class="page" id="art2">
+  <div class="article-grid grid-1-2">
+    <div>
+      <span class="section-label">Investigation</span>
+      <h2 style="font-size: 2.6rem; margin-bottom: 1rem;">Silicon Dust</h2>
+      <p class="byline">By Tomás Reyes · Photography by Lien Chao</p>
+
+      <p class="drop-cap" style="margin-top: 1.5rem;">
+        The chip fabrication plant hums with the quiet intensity of a cathedral. Air filtered to pharmaceutical standards. Workers in bunny suits moving with liturgical precision. It is clean in a way that nature never intended.
+      </p>
+      <p>
+        But outside the fab walls, in the sprawling industrial parks of Hsinchu, Chandler, and Dresden, a different story unfolds. The semiconductor industry's appetite for ultrapure water — millions of gallons per day per facility — is reshaping aquifers and straining municipal systems in ways that few outside the industry understand.
+      </p>
+      <p>
+        A single advanced fab consumes roughly 30 million liters of water daily. That's equivalent to a city of 200,000 people. As nations race to onshore chip production, the environmental ledger is growing heavier.
+      </p>
+    </div>
+
+    <div>
+      <div class="article-img img-noise" style="aspect-ratio: 3/2;">
+        <img src="https://images.unsplash.com/photo-1517077304055-6e89decade9b?w=800&h=530&fit=crop" alt="Semiconductor fabrication">
+      </div>
+      <p>
+        "We've essentially traded one dependency for another," says Dr. Yuki Tanaka, an environmental scientist at MIT who has studied semiconductor supply chains for over a decade. "Instead of depending on foreign oil, we're depending on foreign ultrapure water technology and rare earth processing."
+      </p>
+      <div class="pull-quote">
+        "Every chip carries an invisible watermark — the liters of water, the kilowatt-hours, the rare earths pulled from contested ground."
+      </div>
+      <p>
+        The industry is not blind to this. TSMC recently announced a $200M investment in closed-loop water recycling. Intel's new Ohio facility will be the first to run entirely on reclaimed water. But critics argue these are band-aids on a structural problem.
+      </p>
+      <p>
+        The real question, Tanaka suggests, isn't whether we can make chips more sustainably. It's whether the current trajectory of demand — driven by AI, IoT, and the insatiable appetite for compute — is compatible with any version of sustainability at all.
+      </p>
+    </div>
+  </div>
+  <span class="page-num right">10</span>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- ARTICLE 03 — Protocol People               -->
+<!-- ════════════════════════════════════════════ -->
+<div class="page-divider"><span>03</span></div>
+
+<section class="page" id="art3">
+  <div class="article-grid grid-1-1-1">
+    <div class="col-span-3">
+      <span class="section-label">Culture</span>
+      <h2 style="font-size: 3rem; margin-bottom: 0.5rem;">Protocol People</h2>
+      <p class="byline">By Ada Okonkwo · Portraits by J. Fernandez</p>
+    </div>
+
+    <div>
+      <div class="article-img img-noise" style="aspect-ratio: 4/5;">
+        <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500&h=625&fit=crop" alt="Digital identity">
+      </div>
+      <p class="drop-cap" style="margin-top: 1rem;">
+        In a converted warehouse in Lisbon, a group of cryptographers, philosophers, and former diplomats are building what they believe will be the identity layer the internet never had.
+      </p>
+      <p>
+        The Decentralized Identity Foundation now counts over 200 organizations among its members. But the movement's roots are older — in the cypherpunk mailing lists of the early '90s, in PGP key-signing parties, in the stubborn belief that identity should belong to individuals, not platforms.
+      </p>
+    </div>
+
+    <div>
+      <p>
+        "We're not building a product," says co-founder Lena Voss, her voice carrying the particular intensity of someone who has given this speech many times and still believes it. "We're building a protocol. Products get acquired. Protocols get adopted."
+      </p>
+      <p>
+        The technical architecture is elegant: self-sovereign identity wallets that store verifiable credentials — your degree, your driver's license, your employment history — as cryptographic proofs. You share what you need, nothing more. No central database. No single point of failure.
+      </p>
+      <div class="pull-quote">
+        "Products get acquired. Protocols get adopted. We're building something that outlives any company."
+      </div>
+      <p>
+        The challenge, as always, is adoption. Governments are interested but cautious. Corporations see the efficiency gains but fear the loss of data control. And ordinary people — the ones whose identities are at stake — remain largely unaware that the battle is even being fought.
+      </p>
+    </div>
+
+    <div>
+      <div class="sidebar-box">
+        <h4>Key Protocols</h4>
+        <ul>
+          <li><strong>DID</strong> — W3C Decentralized Identifiers</li>
+          <li><strong>VC</strong> — Verifiable Credentials</li>
+          <li><strong>OIDC4VC</strong> — OpenID for Verifiable Credentials</li>
+          <li><strong>SD-JWT</strong> — Selective Disclosure JWTs</li>
+          <li><strong>KERI</strong> — Key Event Receipt Infrastructure</li>
+        </ul>
+      </div>
+      <p style="margin-top: 1.5rem;">
+        The European Union's eIDAS 2.0 regulation, set to take full effect in 2027, may be the catalyst. It mandates that every EU citizen have access to a digital identity wallet. The question is whether that wallet will be truly self-sovereign — or just another government database with a nicer interface.
+      </p>
+      <p>
+        For Voss and her colleagues, the answer to that question will determine the shape of digital life for the next fifty years. They intend to make sure it's the right one.
+      </p>
+    </div>
+  </div>
+  <span class="page-num left">16</span>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- ARTICLE 04 — The 10ms City                 -->
+<!-- ════════════════════════════════════════════ -->
+<div class="page-divider"><span>04</span></div>
+
+<section class="page" id="art4">
+  <div class="article-grid grid-3-2">
+    <div>
+      <span class="section-label">Infrastructure</span>
+      <h2 style="font-size: 2.8rem; margin-bottom: 1rem;">The 10ms City</h2>
+      <p class="byline">By Marcus Chen · Diagrams by Studio Kōji</p>
+
+      <p class="drop-cap article-lead" style="margin-top: 1.5rem;">
+        Latency is the invisible architecture of modern life. The ten milliseconds between a tap and a response determine whether a surgeon in São Paulo can operate a robot in Stockholm, whether a trader in Chicago can beat a rival in Tokyo, whether a self-driving car can stop in time.
+      </p>
+      <p>
+        Cities are being redesigned around this constraint. Edge computing nodes — small, unremarkable boxes — are being installed in lampposts, subway stations, and traffic lights. Fiber routes are being laid not along existing roads but along the shortest geometric paths between population centers.
+      </p>
+      <p>
+        "We used to design networks for bandwidth," says urban technologist Priya Sharma. "Now we design them for time. The metric isn't megabits per second. It's milliseconds per hop."
+      </p>
+      <p>
+        Singapore's Smart Nation initiative has already achieved sub-5ms latency across 90% of the island. Seoul is close behind. But the most ambitious project may be Neom, Saudi Arabia's planned city, where the entire network architecture was designed before the first building was approved.
+      </p>
+    </div>
+
+    <div>
+      <div class="article-img img-noise" style="aspect-ratio: 4/5;">
+        <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=600&h=750&fit=crop" alt="City at night">
+      </div>
+      <div class="sidebar-box" style="margin-top: 1.5rem;">
+        <h4>Latency Benchmarks</h4>
+        <ul>
+          <li><strong>&lt;1ms</strong> — Industrial automation</li>
+          <li><strong>~5ms</strong> — Remote surgery</li>
+          <li><strong>~10ms</strong> — Autonomous vehicles</li>
+          <li><strong>~20ms</strong> — Cloud gaming (acceptable)</li>
+          <li><strong>~50ms</strong> — Video calls (noticeable)</li>
+          <li><strong>&gt;100ms</strong> — "The uncanny valley of lag"</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <span class="page-num right">22</span>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- ARTICLE 05 — Analog Resistance             -->
+<!-- ════════════════════════════════════════════ -->
+<div class="page-divider"><span>05</span></div>
+
+<section class="page" id="art5">
+  <div class="article-grid grid-2-1-1">
+    <div>
+      <span class="section-label">Essay</span>
+      <h2 style="font-size: 2.6rem; margin-bottom: 1rem;">Analog Resistance</h2>
+      <p class="byline">By Zara Osei-Mensah</p>
+
+      <p class="drop-cap" style="margin-top: 1.5rem;">
+        Vinyl sales surpassed CD sales for the third consecutive year. Film camera prices have tripled since 2020. Typewriter repair shops have waiting lists. Something is happening that market data alone cannot explain.
+      </p>
+      <p>
+        The easy narrative is nostalgia — kids these days, yearning for a past they never knew. But talk to the people actually buying these objects, and a more complex picture emerges. It's not about the past. It's about friction.
+      </p>
+      <p>
+        "Digital is too easy," says Kai, 24, a photography student in Brooklyn who shoots exclusively on Kodak Portra 400. "When everything is effortless, nothing has weight. Film forces me to care about every frame."
+      </p>
+    </div>
+
+    <div>
+      <div class="article-img img-noise" style="aspect-ratio: 3/4;">
+        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=500&h=667&fit=crop" alt="Vinyl record">
+      </div>
+    </div>
+
+    <div>
+      <p>
+        This is the paradox at the heart of the analog revival: it is enabled by the very digital infrastructure it rejects. Kai discovers film photographers on Instagram. Vinyl collectors use Discogs to track rare pressings. Typewriter enthusiasts gather on Reddit.
+      </p>
+      <div class="pull-quote" style="font-size: 1.2rem;">
+        "Friction is not a bug. It's the feature we forgot we needed."
+      </div>
+      <p>
+        The philosopher Matthew Crawford, in his book "The World Beyond Your Head," argues that humans need resistance — physical, cognitive, temporal — to feel fully engaged with their activities. The analog revival, he suggests, is not a rejection of technology but a search for the right kind of difficulty.
+      </p>
+    </div>
+  </div>
+  <span class="page-num left">28</span>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- ARTICLE 06 — Exit Velocity                 -->
+<!-- ════════════════════════════════════════════ -->
+<div class="page-divider"><span>06</span></div>
+
+<section class="page" id="art6">
+  <div class="article-grid grid-1-2">
+    <div>
+      <div class="article-img img-noise" style="aspect-ratio: 1/1;">
+        <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=600&h=600&fit=crop" alt="Rocket launch">
+      </div>
+      <div class="sidebar-box" style="margin-top: 1.5rem;">
+        <h4>Space-Tech Funding</h4>
+        <ul>
+          <li><strong>$18.7B</strong> — Global H1 2026</li>
+          <li><strong>62%</strong> — LEO communications</li>
+          <li><strong>23%</strong> — Launch services</li>
+          <li><strong>15%</strong> — In-space manufacturing</li>
+        </ul>
+      </div>
+    </div>
+
+    <div>
+      <span class="section-label">Frontier</span>
+      <h2 style="font-size: 2.8rem; margin-bottom: 1rem;">Exit Velocity</h2>
+      <p class="byline">By Daniel Park · Data visualization by A. Ibrahim</p>
+
+      <p class="drop-cap article-lead" style="margin-top: 1.5rem;">
+        The first internet was built on telephone lines. The second may be built on satellites, laser links, and orbital compute nodes — and a new generation of startups is racing to lay the foundation.
+      </p>
+      <p>
+        In a converted airplane hangar outside Austin, a team of 40 engineers is building what they call "the cloud, but actually in the sky." Orbital Compute Systems (OCS) plans to deploy a constellation of small satellites equipped with GPU clusters, capable of processing data in orbit before beaming results back to Earth.
+      </p>
+      <p>
+        "The bottleneck isn't bandwidth anymore," says CEO Rachel Torres, a former SpaceX engineer. "It's round-trip time for computation. If you can process in orbit, you cut the latency for global AI inference by an order of magnitude."
+      </p>
+      <p>
+        The concept sounds like science fiction, but the economics are increasingly plausible. Launch costs have fallen 90% in a decade. Satellite component costs follow their own version of Moore's Law. And the demand for low-latency compute — from autonomous vehicles to real-time translation to AR glasses — is growing exponentially.
+      </p>
+      <div class="pull-quote">
+        "The first internet connected people to information. The second will connect intelligence to everything."
+      </div>
+      <p>
+        Not everyone is convinced. "This is the Juicero of space," quips one venture capitalist who passed on the deal. "You're adding enormous complexity to solve a problem that edge computing handles fine." But Torres counters that edge computing is a local solution to a global problem. "You can't put an edge node in the middle of the Pacific," she says. "But you can put a satellite there."
+      </p>
+    </div>
+  </div>
+  <span class="page-num right">32</span>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- COLOPHON / FOOTER                          -->
+<!-- ════════════════════════════════════════════ -->
+<footer class="colophon">
+  <div>
+    <div class="colophon-brand">BYTE &amp; CIRCUIT</div>
+    <p>
+      Published monthly by Circuit Press Ltd.<br>
+      47 Fleet Street, London EC4Y 1BJ<br>
+      United Kingdom
+    </p>
+    <p style="margin-top: 1rem;">
+      <strong>Editor-in-Chief:</strong> Helena Voss<br>
+      <strong>Managing Editor:</strong> James Okoro<br>
+      <strong>Art Director:</strong> Yuki Tanaka<br>
+      <strong>Photo Editor:</strong> Lien Chao
+    </p>
+    <div class="issn">
+      ISSN 2045-8827 (Print) · ISSN 2045-8835 (Digital)<br>
+      Registered at the Post Office as a Newspaper
+    </div>
+  </div>
+
+  <div>
+    <h5>Subscriptions</h5>
+    <p>
+      Annual: $49.95 (US) · £35.00 (UK) · €42.00 (EU)<br>
+      Includes digital access and archive<br><br>
+      <a href="#">subscribe@byteandcircuit.com</a>
+    </p>
+    <h5 style="margin-top: 1.5rem;">Advertising</h5>
+    <p>
+      For rates and media kit:<br>
+      <a href="#">ads@byteandcircuit.com</a>
+    </p>
+  </div>
+
+  <div>
+    <h5>Editorial</h5>
+    <p>
+      Unsolicited manuscripts welcome.<br>
+      Guidelines at<br>
+      <a href="#">byteandcircuit.com/guidelines</a><br><br>
+      Letters to the editor:<br>
+      <a href="#">letters@byteandcircuit.com</a>
+    </p>
+    <h5 style="margin-top: 1.5rem;">Permissions</h5>
+    <p>
+      © 2026 Circuit Press Ltd.<br>
+      All rights reserved.<br>
+      No part may be reproduced without written permission.
+    </p>
+  </div>
+
+  <div class="colophon-bottom">
+    Printed on FSC-certified paper · Set in Playfair Display &amp; IBM Plex Mono · Typeset with care and old-fashioned conviction
+  </div>
+</footer>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- JAVASCRIPT                                 -->
+<!-- ════════════════════════════════════════════ -->
+<script>
+(function() {
+  'use strict';
+
+  // ── Scroll Reveal ──
+  const pages = document.querySelectorAll('.page');
+  const reveals = document.querySelectorAll('.reveal');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible', 'in-view');
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -50px 0px' });
+
+  pages.forEach(p => observer.observe(p));
+  reveals.forEach(r => observer.observe(r));
+
+  // ── Page Turn Effect on TOC Navigation ──
+  const overlay = document.getElementById('pageTurn');
+  const tocItems = document.querySelectorAll('.toc-item');
+
+  tocItems.forEach(item => {
+    item.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('data-page');
+      const target = document.getElementById(targetId);
+      if (!target) return;
+
+      // Trigger page turn animation
+      overlay.classList.add('turning');
+
+      setTimeout(() => {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 350);
+
+      setTimeout(() => {
+        overlay.classList.remove('turning');
+      }, 800);
+    });
+  });
+
+  // ── Page Turn on Scroll Between Sections ──
+  let lastScrollY = window.scrollY;
+  let turning = false;
+
+  const sectionBreaks = [];
+  document.querySelectorAll('.page-divider').forEach(d => {
+    sectionBreaks.push(d.offsetTop - 200);
+  });
+
+  window.addEventListener('scroll', () => {
+    if (turning) return;
+    const currentY = window.scrollY;
+    const direction = currentY > lastScrollY ? 'down' : 'up';
+
+    for (const breakY of sectionBreaks) {
+      if (direction === 'down' && lastScrollY < breakY && currentY >= breakY) {
+        triggerPageTurn();
+        break;
+      }
+    }
+    lastScrollY = currentY;
+  }, { passive: true });
+
+  function triggerPageTurn() {
+    turning = true;
+    overlay.classList.add('turning');
+    setTimeout(() => {
+      overlay.classList.remove('turning');
+      turning = false;
+    }, 800);
+  }
+
+  // ── TOC Number Hover Sound (visual feedback) ──
+  tocItems.forEach(item => {
+    const num = item.querySelector('.toc-num');
+    item.addEventListener('mouseenter', () => {
+      num.style.transition = 'font-size 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.3s';
+    });
+  });
+
+  // ── Initial page reveal ──
+  setTimeout(() => {
+    document.querySelector('.masthead').classList.add('visible');
+  }, 100);
+
+})();
+</script>
+
+</body>
+</html>
