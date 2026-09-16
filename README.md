@@ -1,10 +1,13 @@
 # BYTE & CIRCUIT
 
-A visual tech news preview webpage inspired by 1990s print magazine aesthetics.
----
-###
-**🔗 Live Site:** [rishabhbhardwaj-dev.github.io/byte-and-circuit](https://rishabhbhardwaj-dev.github.io/byte-and-circuit/)
----
+ A visual tech-news experience inspired by the editorial layouts,
+ typography, and print aesthetics of 1990s technology magazines.
+
+<div align="center">
+
+### [↗ View Live Demo](https://rishabhbhardwaj-dev.github.io/byte-and-circuit/)
+
+</div>
 
 ## Features
 
