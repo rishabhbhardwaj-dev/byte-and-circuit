@@ -5,7 +5,11 @@
 
 <div align="center">
 
-### [↗ View Live Demo](https://rishabhbhardwaj-dev.github.io/byte-and-circuit/)
+
+
+[![Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-BYTE%20%26%20CIRCUIT-111827?style=for-the-badge)](https://rishabhbhardwaj-dev.github.io/byte-and-circuit/)
+
+</div>
 
 </div>
 
