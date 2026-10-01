@@ -1,7 +1,6 @@
 # 📰 BYTE & CIRCUIT
 
-> A visual tech-news experience inspired by the editorial layouts,
-> typography, and print aesthetics of 1990s technology magazines.
+> A visual tech-news experience inspired by the editorial layouts, typography, and print aesthetics of 1990s technology magazines.
 
 [![Live Demo](https://img.shields.io/badge/%F0%9F%9A%80_Live_Demo-BYTE_%26_CIRCUIT-111827?style=for-the-badge)](https://rishabhbhardwaj-dev.github.io/byte-and-circuit/)
 
@@ -17,25 +16,25 @@
 ## ✨ Features
 
 | | Feature | Description |
-|---|---------|-------------|
-| 🅰️ | **Typography** | Playfair Display (serif) for headlines, IBM Plex Mono (monospace) for body |
+|---|---|---|
+| 🅰️ | **Typography** | Playfair Display for headlines and IBM Plex Mono for body text |
 | 📐 | **Multi-column Grid** | Varying column layouts per article (`2fr/1fr`, `1fr/1fr/1fr`, `3fr/2fr`) |
 | 📰 | **Print Overflow Headline** | Masthead bleeds past the left viewport edge |
-| 🎨 | **Sepia + Noise** | Images filtered with `sepia(0.2)` and SVG fractalNoise overlay |
+| 🎨 | **Sepia + Noise** | Images use a subtle sepia treatment with an SVG fractal-noise overlay |
 | 📖 | **Page Turn Transitions** | CSS 3D perspective animation between sections |
 | 📑 | **Magazine TOC** | Numbered `01`–`06` navigation with hover-enlarging digits |
-| 🏷️ | **Colophon Footer** | Fake ISSN, editorial staff, subscription rates, copyright boilerplate |
-| 📝 | **Paper Texture** | Fixed SVG noise layer over the entire page |
-| 🔤 | **Drop Caps** | First-letter styling on article leads |
-| 💬 | **Pull Quotes** | Accent-bordered italic quotes |
-| 📱 | **Responsive** | Adapts to mobile with single-column fallback |
+| 🏷️ | **Colophon Footer** | Editorial-style footer with publication details and subscription information |
+| 📝 | **Paper Texture** | Fixed SVG noise layer across the page |
+| 🔤 | **Drop Caps** | First-letter styling on article introductions |
+| 💬 | **Pull Quotes** | Accent-bordered italic quotations |
+| 📱 | **Responsive Design** | Adapts to mobile with a single-column fallback |
 
 ---
 
 ## 📖 Articles
 
 | # | Title | Section |
-|---|-------|---------|
+|---|---|---|
 | 01 | **The Last Compiler** | 🔧 Feature |
 | 02 | **Silicon Dust** | 🔍 Investigation |
 | 03 | **Protocol People** | 🌐 Culture |
@@ -52,42 +51,52 @@
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![Google Fonts](https://img.shields.io/badge/Google_Fonts-4285F4?style=for-the-badge&logo=google&logoColor=white)
 
-- ✅ Pure HTML + CSS + vanilla JavaScript
-- ✅ No build tools, no dependencies, no frameworks
-- ✅ Google Fonts (Playfair Display, IBM Plex Mono)
-- ✅ Unsplash images (via URL)
+- Pure HTML, CSS, and vanilla JavaScript
+- No build tools
+- No frameworks
+- No external JavaScript dependencies
+- Google Fonts: Playfair Display and IBM Plex Mono
+- Unsplash images loaded through URLs
 
 ---
 
 ## 🖼️ Preview
 
-![Preview](./Screenshot%202026-08-22%20153608.png)
+![BYTE & CIRCUIT Preview](./Screenshot%202026-08-22%20153608.png)
 
 ---
 
 ## 🚀 Usage
 
-Just open `index.html` in a browser. That's it.
+Clone the repository:
 
 ```bash
 git clone https://github.com/rishabhbhardwaj-dev/byte-and-circuit.git
 cd byte-and-circuit
-# Open index.html in your browser
+```
 
-👨‍💻 Author
+Then open `index.html` in a browser.
 
-Rishabh Bhardwaj
+No build step or package installation is required.
 
+---
 
-Portfolio:
-rishabh-portfolio-lac.vercel.app
-GitHub:
-@rishabhbhardwaj-dev
-LinkedIn:
-Rishabh Bhardwaj
-📄 License
+## 👨‍💻 Author
 
-© 2026 Circuit Press Ltd. — This is a design demo, not a real publication.
+**Rishabh Bhardwaj**
 
+- **Portfolio:** https://rishabh-portfolio-lac.vercel.app/
+- **GitHub:** https://github.com/rishabhbhardwaj-dev
+- **LinkedIn:** https://www.linkedin.com/in/rishabhbhardwaj-tech/
+
+---
+
+## 📄 License
+
+© 2026 Circuit Press Ltd.
+
+This project is a **design demo** inspired by the visual language of 1990s technology magazines. It is not a real publication.
+
+---
 
 ⭐ If you enjoyed this throwback, feel free to star the repository!
