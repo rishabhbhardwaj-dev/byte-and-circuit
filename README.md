@@ -60,13 +60,13 @@
 
 ---
 
-## 🖼️ Preview
+##  Preview
 
 ![BYTE & CIRCUIT Preview](./Screenshot%202026-08-22%20153608.png)
 
 ---
 
-## 🚀 Usage
+##  Usage
 
 Clone the repository:
 
