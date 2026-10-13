@@ -1,6 +1,6 @@
 # 📰 BYTE & CIRCUIT
 
-> A visual tech-news experience inspired by the editorial layouts, typography, and print aesthetics of 1990s technology magazines.
+> A visual tech-news experience web, inspired by the editorial layouts, typography, and print aesthetics of 1990s technology magazines.
 
 [![Live Demo](https://img.shields.io/badge/%F0%9F%9A%80_Live_Demo-BYTE_%26_CIRCUIT-111827?style=for-the-badge)](https://rishabhbhardwaj-dev.github.io/byte-and-circuit/)
 
