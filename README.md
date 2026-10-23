@@ -1,4 +1,4 @@
-# 📰 BYTE & CIRCUIT
+# 📰 BYTE & CIRCUIT_
 
 > A visual tech-news experience web, inspired by the editorial layouts, typography, and print aesthetics of 1990s technology magazines.
 
